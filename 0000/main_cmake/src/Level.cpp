@@ -317,7 +317,6 @@ void Level::LoadMap(const std::string& mapName, Graphics& graphics) {
 							//
 
 							//
-							//
 							int obX = std::ceil(ob["x"].get<int>( ));
 							int obY = std::ceil(ob["y"].get<int>( ));
 							int polX = poly["x"].get<int>( );
