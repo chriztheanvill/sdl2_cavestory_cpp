@@ -399,7 +399,6 @@ std::vector<Rectangle> Level::checkTileCollisions(const Rectangle& other) {
 		fmt::print("\n\nother empty");
 	}
 
-	// fmt::print("\nCheckTileCollisions: {}", rect_collided.size( ));
 	return rect_collided;
 }
 
