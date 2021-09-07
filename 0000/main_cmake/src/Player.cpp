@@ -155,7 +155,7 @@ void Player::handleTileCollisions(std::vector<Rectangle>& others) {
 			/* ################################### */
 			case Sides::Side::NONE:
 				// No esta tocando nada.
-				fmt::print("\n 000000000000000 touched Nothing\n");
+				fmt::print("\n ------------------- touched Nothing\n");
 				// mGrounded = false;
 				break;
 		}	// Switch
@@ -183,9 +183,7 @@ void Player::handleSlopeCollision(std::vector<Slope>& others) {
 		// Pass X in to the equation y = mx + b ( Using our newly found b and x
 		// ) to get new "y" position
 		int newY =
-			// (o.getSlope( ) * centerX) + b;	 // Temporary to fix a problem
-			// (o.getSlope( ) * centerX) + b - 6;	 // Temporary to fix a
-			// problem
+			// (o.getSlope( ) * centerX) + b;
 			(o.getSlope( ) * centerX) + b -
 			(mBoundingBox->getHeight( ) / 4);	// Temporary to fix a problem
 
@@ -193,7 +191,7 @@ void Player::handleSlopeCollision(std::vector<Slope>& others) {
 		if (mGrounded) {
 			mPos.y = newY - mBoundingBox->getHeight( );
 
-			// Resuelve el bug asd
+			// Resuelve el bug 00
 		} else if (mPos.y >= newY - mBoundingBox->getHeight( )) {
 			mPos.y = newY - mBoundingBox->getHeight( );
 
