@@ -1,0 +1,18 @@
+## VS Code
+.cache/
+.history/
+build/
+debug/
+.kdev4/
+
+## Google Test
+googletest/
+
+## CLION
+.idea/
+cmake-build-debug/
+cmake-build-release/
+.clang-format
+
+## QtCreator
+CMakeLists.txt.user

@@ -1,0 +1,14 @@
+{ "columns":16,
+ "image":"..\/images\/PrtBarr.png",
+ "imageheight":88,
+ "imagewidth":256,
+ "margin":0,
+ "name":"PrtBarr",
+ "spacing":0,
+ "tilecount":80,
+ "tiledversion":"1.4.3",
+ "tileheight":16,
+ "tilewidth":16,
+ "type":"tileset",
+ "version":1.4
+}
