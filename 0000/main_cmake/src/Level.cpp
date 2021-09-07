@@ -314,9 +314,7 @@ void Level::LoadMap(const std::string& mapName, Graphics& graphics) {
 							// fmt::print("\npolyX: {}", poly["x"].get<int>( ));
 							// fmt::print("\npolyY: {}", poly["y"].get<int>( ));
 							// fmt::print("\n----\n");
-							//
 
-							//
 							int obX = std::ceil(ob["x"].get<int>( ));
 							int obY = std::ceil(ob["y"].get<int>( ));
 							int polX = poly["x"].get<int>( );
