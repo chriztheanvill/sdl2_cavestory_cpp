@@ -193,6 +193,7 @@ void Player::handleSlopeCollision(std::vector<Slope>& others) {
 		if (mGrounded) {
 			mPos.y = newY - mBoundingBox->getHeight( );
 
+			// Resuelve el bug asd
 		} else if (mPos.y >= newY - mBoundingBox->getHeight( )) {
 			mPos.y = newY - mBoundingBox->getHeight( );
 
