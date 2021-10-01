@@ -17,11 +17,13 @@ class Tile {
 	void Update(float deltaTime);
 	void Draw(Graphics& graphics);
 
-  private:
-	SDL_Texture* mTileSet;
+  protected:
 	Vec2 mSize;
 	Vec2 mSourceTile;
-	Vec2 mDestTile;
+	Vec2 mDestTile;	  // Position
+	SDL_Texture* mTileSet;
+
+  private:
 };
 
 #endif	 // TILE_H

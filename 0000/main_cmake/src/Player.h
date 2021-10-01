@@ -23,6 +23,13 @@ class Player : public AnimatedSprite {
 	void MoveLeft( );
 	void MoveRight( );
 	void Jump( );
+
+	void lookUp( );
+	void stopLookingUp( );
+
+	void lookDown( );
+	void stopLookingDown( );
+
 	void StopMoving( );
 	bool getGrounded( ) const { return mGrounded; }
 	void setGrounded(const bool& ground) { mGrounded = ground; }
@@ -39,6 +46,7 @@ class Player : public AnimatedSprite {
 	 * @param others
 	 */
 	void handleTileCollisions(std::vector<Rectangle>& others);
+
 	void handleSlopeCollision(std::vector<Slope>& others);
 
   private:
@@ -46,6 +54,9 @@ class Player : public AnimatedSprite {
 	float mX, mY, mYY;
 	Direction mFacing;
 	bool mGrounded;
+
+	bool mLookingUp;
+	bool mLookingDown;
 };
 
 #endif	 //	PLAYER_H

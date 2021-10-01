@@ -59,6 +59,10 @@
 int main([[maybe_unused]] int argc, [[maybe_unused]] char* argv[]) {
 	std::unique_ptr<Game> mGame { std::make_unique<Game>( ) };
 
+	mGame = nullptr;
+
+	fmt::print("\nExitGame\n");
+
 	// Display* d { XOpenDisplay(nullptr) };
 	// Screen* s { XDefaultScreenOfDisplay(d) };
 

@@ -41,8 +41,14 @@ class AnimatedSprite : public Sprite {
 	 * @details Add Animation by rect
 	 *
 	 * */
-	void AddAnimation(int frames, std::string name, SDL_Rect rect, Vec2 offset);
+	void AddAnimation(int frames,
+					  const std::string& name,
+					  SDL_Rect rect,
+					  Vec2 offset);
 	void ResetAnimations( );
+	/**
+	 * @brief Stop Animations
+	 */
 	void StopAnimation( );
 	void SetVisible(bool visible);
 

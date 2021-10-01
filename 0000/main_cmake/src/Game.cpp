@@ -5,6 +5,9 @@
 #include "./Time.h"
 
 #include <fmt/color.h>
+#include <fmt/core.h>
+
+#include <cpuid.h>
 
 /* ---------------- Singleton ---------------- */
 // Game* Game::sGame = nullptr;
@@ -17,7 +20,7 @@ Game::Game( ) {
 	initLibs( );
 
 	/* Start pointers */
-	mTiles = std::make_unique<Tile>( );
+	// mTiles = std::make_unique<Tile>( );
 
 	// SDL_Rect source { 0, 0, 16, 16 };
 	// SDL_Rect pos { 400, 200, 0, 0 };
@@ -43,6 +46,10 @@ Game::Game( ) {
 
 /* ********************************************************** */
 Game::~Game( ) {
+	// TTF_Quit( );
+	// IMG_Quit( );
+	// Mix_Quit( );
+	fmt::print("\nJust for fun!\n");
 	SDL_Quit( );
 	// delete sGame;
 }
@@ -281,6 +288,21 @@ void Game::Loop( ) {
 	}
 }
 
+void Game::checkCPUInfo( ) {
+	std::string CPUBrandString;
+	CPUBrandString.resize(49);
+	uint* CPUInfo = reinterpret_cast<uint*>(CPUBrandString.data( ));
+	for (uint i = 0; i < 3; i++)
+		__cpuid(0x80000002 + i,
+				CPUInfo[i * 4 + 0],
+				CPUInfo[i * 4 + 1],
+				CPUInfo[i * 4 + 2],
+				CPUInfo[i * 4 + 3]);
+	CPUBrandString.assign(CPUBrandString.data( ));	 // correct null terminator
+	// std::cout << CPUBrandString << std::endl;
+	fmt::print("\nCPU info: {}\n", CPUBrandString);
+}
+
 void Game::Draw( ) {
 	graphics->Clear( );
 	mLevel->Draw(*graphics);
@@ -302,6 +324,17 @@ void Game::Update(float deltaTime) {
 		// fmt::print("Right\n");
 	}
 
+	if (input->IsKeyHeld(SDL_SCANCODE_UP)) {
+		mPlayer->lookUp( );
+	} else if (input->IsKeyHeld(SDL_SCANCODE_DOWN)) {
+		mPlayer->lookDown( );
+	}
+
+	if (input->WasKeyReleased(SDL_SCANCODE_UP)) { mPlayer->stopLookingUp( ); }
+	if (input->WasKeyReleased(SDL_SCANCODE_DOWN)) {
+		mPlayer->stopLookingDown( );
+	}
+
 	if (input->WasKeyPressed(SDL_SCANCODE_UP) ||
 		input->IsKeyHeld(SDL_SCANCODE_W)) {
 		mPlayer->Jump( );
@@ -321,16 +354,17 @@ void Game::Update(float deltaTime) {
 	/* Player Move */
 
 	// mTiles->Update(deltaTime);
-	// mLevel->Update(deltaTime);
+	mLevel->Update(deltaTime);
+
 	mPlayer->Update(deltaTime);
 
 	// Rectangle rTest = *mPlayer->getBoundingBox( );
 
 	// fmt::print("\nrTest: {}", rTest.getBottom( ));
 
-	// if ((others = mLevel->checkTileCollisions(*mPlayer->getBoundingBox( )))
-	// 		.size( ) > 0) {
-	// if (!(others = mLevel->checkTileCollisions(rTest)).empty( )) {
+	// if ((others = mLevel->checkTileCollisions(*mPlayer->getBoundingBox(
+	// ))) 		.size( ) > 0) { if (!(others =
+	// mLevel->checkTileCollisions(rTest)).empty( )) {
 
 	// Check collisions
 	std::vector<Rectangle> others;
@@ -345,12 +379,13 @@ void Game::Update(float deltaTime) {
 	if (!(otherSlopes =
 			  mLevel->checkSlopeCollisions(*mPlayer->getBoundingBox( )))
 			 .empty( )) {
-		// fmt::print("\n+++++testing");
 		mPlayer->handleSlopeCollision(otherSlopes);
 	}
 
 	if (others.empty( ) && otherSlopes.empty( )) {
-		fmt::print("\nothers and othersSlope are empty\n");
+		// fmt::print("\nothers and othersSlope are empty\n");
 		mPlayer->setGrounded(false);
 	}
+
+	// fmt::print("\n#################################\n");
 }

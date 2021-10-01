@@ -8,7 +8,6 @@ namespace Cris {
 	void Time::Init( ) {
 		// mDeltaTime = (static_cast<float>(SDL_GetTicks( )) - mLastUpdate) *
 		// 			 (mFPS / SECONDS);
-
 		// fmt::print("\n DeltaTime: {}\n", mDeltaTime);
 		// /*
 		// Frecuente:
@@ -20,9 +19,7 @@ namespace Cris {
 		// 0.5399999996
 		// */
 		// if (mDeltaTime > mFPSLimit) { mDeltaTime = mFPSLimit; }
-
 		// mLastUpdate = static_cast<float>(SDL_GetTicks( ));
-
 		// #########################################
 		// fmt::print("\nRest: {}\n", (SDL_GetTicks( ) - mLastTime));
 

@@ -68,6 +68,8 @@ class Game {
 	 */
 	void Loop( );
 
+	void checkCPUInfo( );
+
 	bool is_running { false };
 
 	//	Player mPlayer;

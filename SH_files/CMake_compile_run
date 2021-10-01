@@ -45,6 +45,8 @@ echo "####### ####### ####### Compiled ####### ####### #######" ;
 echo "####### ####### ####### ######### ####### ####### #######" ; 
 echo -e "\e[0m"
 
+read  -n 1; 
+
 echo
 echo
 
@@ -53,6 +55,6 @@ echo
 echo
 echo
 
-read  -n 1; 
+read  -n 2; 
 exit; 
 exec bash;

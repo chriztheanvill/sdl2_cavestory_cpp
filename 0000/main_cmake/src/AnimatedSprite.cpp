@@ -18,7 +18,7 @@ AnimatedSprite::AnimatedSprite(Graphics& graphics,
 /* ############################################################### */
 /* ############################################################### */
 void AnimatedSprite::AddAnimation(int frames,
-								  std::string name,
+								  const std::string& name,
 								  SDL_Rect rect,
 								  Vec2 offset) {
 	std::vector<SDL_Rect> rectangles;

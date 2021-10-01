@@ -3,6 +3,7 @@
 //
 
 #include "Controllers.h"
+#include "SDL_joystick.h"
 #include <iostream>
 #include <SDL2/SDL.h>
 
@@ -13,7 +14,10 @@ Controllers::Controllers( ) {
 	Init( );
 }
 
-Controllers::~Controllers( ) { SDL_JoystickClose(joy); }
+Controllers::~Controllers( ) {
+	// SDL_JoystickClose(joy);
+	if (SDL_NumJoysticks( ) >= 1) { SDL_JoystickClose(joy); }
+}
 
 void Controllers::Init( ) {
 	if (SDL_Init(SDL_INIT_JOYSTICK) != 0) {

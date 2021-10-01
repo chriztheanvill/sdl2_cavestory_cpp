@@ -12,14 +12,13 @@ namespace {
 	// constexpr float GRAVITY = 9.81F * 1000;
 	// Time to fall: Like Coyote time
 	constexpr float GRAVITY_VELOCITY = 5;
-	// constexpr float GRAVITY_VELOCITY = 0.009F;
-	constexpr float GRAVITY_MAX = 150.0F;
-	// constexpr float GRAVITY_MAX = 350.0F;
+	// constexpr float GRAVITY_MAX = 150.0F;
+	constexpr float GRAVITY_MAX = 300.0F;
 	constexpr float UNI_MASS { 1.0F };
 	constexpr float FORCE { .005F };
 
 	// constexpr int JUMPFORCE = 50;
-	constexpr int JUMPFORCE = 300;
+	constexpr int JUMPFORCE = 350;
 
 }	// namespace
 
@@ -46,10 +45,10 @@ void Player::Update(float DeltaTime) {
 
 	mPos.y += static_cast<int>(mYY * DeltaTime);
 
-	// fmt::print("++----++ mY {}\n", mY);
-	fmt::print("++----++ mYY {}\n", mYY);
-	fmt::print("++----++ mPos.y {}\n", mPos.y);
-	fmt::print("++----++ Grounded {}\n\n", mGrounded);
+	// // fmt::print("++----++ mY {}\n", mY);
+	// fmt::print("++----++ mYY {}\n", mYY);
+	// fmt::print("++----++ mPos.y {}\n", mPos.y);
+	// fmt::print("++----++ Grounded {}\n\n", mGrounded);
 
 	mPos.x += static_cast<int>(mX * DeltaTime);
 	// fmt::print("mPos: x {} - y {}\n", mPos.x, mPos.y);
@@ -66,29 +65,65 @@ void Player::AnimationDone(std::string currentAnimation) {
 void Player::SetupAnimation( ) {
 	SDL_Rect RunLeft { 0, 0, 16, 16 };
 	SDL_Rect RunRight { 0, 16, 16, 16 };
+
 	SDL_Rect IdleLeft { 0, 0, 16, 16 };
 	SDL_Rect IdleRight { 0, 16, 16, 16 };
+
+	SDL_Rect IdleLeftUp { 3, 0, 16, 16 };
+	SDL_Rect IdleRightUp { 3, 16, 16, 16 };
+
+	SDL_Rect IdleLeftDown { 6, 0, 16, 16 };
+	SDL_Rect IdleRightDown { 6, 16, 16, 16 };
+
+	SDL_Rect LookDownLeft { 6, 0, 16, 16 };
+	SDL_Rect LookDownRight { 6, 16, 16, 16 };
+
+	SDL_Rect LookBackwardsLeft { 7, 0, 16, 16 };
+	SDL_Rect LookBackwardsRight { 7, 16, 16, 16 };
+
 	AddAnimation(1, "IdleLeft", IdleLeft, Vec2(0, 0));
 	AddAnimation(1, "IdleRight", IdleRight, Vec2(0, 0));
+
 	AddAnimation(3, "RunLeft", RunLeft, Vec2(0, 0));
 	AddAnimation(3, "RunRight", RunRight, Vec2(0, 0));
+
+	AddAnimation(1, "IdleLeftUp", IdleLeftUp, Vec2( ));
+	AddAnimation(1, "IdleRightUp", IdleRightUp, Vec2( ));
+
+	AddAnimation(3, "RunLeftUp", IdleLeftUp, Vec2( ));
+	AddAnimation(3, "RunRightUp", IdleRightUp, Vec2( ));
+
+	AddAnimation(1, "IdleLeftDown", IdleLeftDown, Vec2( ));
+	AddAnimation(1, "IdleRightDown", IdleRightDown, Vec2( ));
+
+	AddAnimation(3, "RunLeftDown", IdleLeftDown, Vec2( ));
+	AddAnimation(3, "RunRightDown", IdleRightDown, Vec2( ));
+
+	AddAnimation(1, "LookDownLeft", LookDownLeft, Vec2( ));
+	AddAnimation(1, "LookDownRight", LookDownRight, Vec2( ));
+
+	AddAnimation(1, "LookBackwardsLeft", LookBackwardsLeft, Vec2( ));
+	AddAnimation(1, "LookBackwardsRight", LookBackwardsRight, Vec2( ));
 }
 
 void Player::MoveLeft( ) {
+	if (mLookingDown && mGrounded) { return; }
 	mX = -WALK_SPEED;
-	PlayAnimation("RunLeft");
+	if (!mLookingUp) { PlayAnimation("RunLeft"); }
 	mFacing = Direction::LEFT;
 }
 
 void Player::MoveRight( ) {
+	if (mLookingDown && mGrounded) { return; }
 	mX = WALK_SPEED;
-	PlayAnimation("RunRight");
+	if (!mLookingUp) { PlayAnimation("RunRight"); }
 	mFacing = Direction::RIGHT;
 }
 
 void Player::Jump( ) {
 	if (mGrounded) {
 		mYY = 0;
+		// mYY = -mJumpingForce;
 		mYY = -JUMPFORCE;
 		mGrounded = false;
 	}
@@ -96,7 +131,33 @@ void Player::Jump( ) {
 
 void Player::StopMoving( ) {
 	mX = 0.0F;
-	PlayAnimation(mFacing == Direction::RIGHT ? "IdleRight" : "IdleLeft");
+	if (!mLookingUp && !mLookingDown) {
+		PlayAnimation(mFacing == Direction::RIGHT ? "IdleRight" : "IdleLeft");
+	}
+}
+
+void Player::lookUp( ) {
+	mLookingUp = true;
+	if (mX == 0) {
+		PlayAnimation(mFacing == Direction::RIGHT ? "IdleRightUp" :
+													  "IdleLeftUp");
+	} else {
+		PlayAnimation(mFacing == Direction::RIGHT ? "RunRightUp" : "RunLeftUp");
+	}
+}
+
+void Player::stopLookingUp( ) { mLookingUp = false; }
+void Player::stopLookingDown( ) { mLookingDown = false; }
+
+void Player::lookDown( ) {
+	mLookingDown = true;
+	if (mGrounded) {
+		PlayAnimation(mFacing == Direction::RIGHT ? "LookBackwardsRight" :
+													  "LookBackwardsLeft");
+	} else {
+		PlayAnimation(mFacing == Direction::RIGHT ? "LookDownRight" :
+													  "LookDownLeft");
+	}
 }
 
 void Player::handleTileCollisions(std::vector<Rectangle>& others) {
@@ -114,8 +175,8 @@ void Player::handleTileCollisions(std::vector<Rectangle>& others) {
 				if (!mGrounded) {
 					mPos.y = i.getBottom( ) + 1;
 					mGrounded = false;
-					fmt::print(
-						"\n vvvvvvvvv^^^^^^^^^ touched top and grounded\n");
+					// fmt::print(
+					// 	"\n vvvvvvvvv^^^^^^^^^ touched top and grounded\n");
 					mYY = 0;   // Reset GRAVITY
 				} else {
 					/* Si esta en el suelo y techo:
@@ -125,7 +186,7 @@ void Player::handleTileCollisions(std::vector<Rectangle>& others) {
 					mPos.x -= mFacing == Direction::RIGHT ? 1 : -1;
 				}
 				// mY = 0;	  // Reset GRAVITY
-				fmt::print("\n ^^^^^^^^^^^^^^^^^^ touched top\n");
+				// fmt::print("\n ^^^^^^^^^^^^^^^^^^ touched top\n");
 				break;
 			/* ################################### */
 			case Sides::Side::BOTTOM:
@@ -135,15 +196,15 @@ void Player::handleTileCollisions(std::vector<Rectangle>& others) {
 
 				// mYY = 0;
 				// mY = 0;
-				fmt::print("\n vvvvvvvvvvvvvvvv mPos.y: {}\n", mPos.y);
-				fmt::print("\n vvvvvvvvvvvvvvvv touched Bottom\n");
+				// fmt::print("\n vvvvvvvvvvvvvvvv mPos.y: {}\n", mPos.y);
+				// fmt::print("\n vvvvvvvvvvvvvvvv touched Bottom\n");
 				mGrounded = true;
 				break;
 			/* ################################### */
 			case Sides::Side::LEFT:
 				// Un paso mas a la derecha
 				mPos.x = i.getRight( ) + 1;
-				fmt::print("\n <<<<<<<<<<<<<<<<<< touched left\n");
+				// fmt::print("\n <<<<<<<<<<<<<<<<<< touched left\n");
 				// mGrounded = false;
 				break;
 			/* ################################### */
@@ -155,7 +216,7 @@ void Player::handleTileCollisions(std::vector<Rectangle>& others) {
 			/* ################################### */
 			case Sides::Side::NONE:
 				// No esta tocando nada.
-				fmt::print("\n ------------------- touched Nothing\n");
+				// fmt::print("\n ------------------- touched Nothing\n");
 				// mGrounded = false;
 				break;
 		}	// Switch
@@ -191,7 +252,7 @@ void Player::handleSlopeCollision(std::vector<Slope>& others) {
 		if (mGrounded) {
 			mPos.y = newY - mBoundingBox->getHeight( );
 
-			// Resuelve el bug 00
+			// Resuelve el bug
 		} else if (mPos.y >= newY - mBoundingBox->getHeight( )) {
 			mPos.y = newY - mBoundingBox->getHeight( );
 
